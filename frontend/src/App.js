@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Link, Route, Routes, useNavigate } from 'react-router-dom';
 
 const API = 'http://localhost:5000/api/tasks';
 
-function App() {
+function TaskManager() {
+  const navigate = useNavigate();
+
   const [tasks, setTasks] = useState([]);
   const [error, setError] = useState(null);
   const [newTaskText, setNewTaskText] = useState('');
@@ -99,9 +102,21 @@ function App() {
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex flex-col items-center py-16 px-4">
 
       {/* Header */}
-      <div className="w-full max-w-lg mb-8 text-center">
-        <h1 className="text-4xl font-extrabold text-indigo-700 tracking-tight">Task Manager</h1>
-        <p className="mt-2 text-gray-500 text-sm">Powered by MongoDB Atlas · Full CRUD</p>
+      <div className="w-full max-w-lg mb-8">
+        <div className="flex items-center justify-between gap-4">
+          <div className="text-left">
+            <h1 className="text-4xl font-extrabold text-indigo-700 tracking-tight">Task Manager</h1>
+            <p className="mt-2 text-gray-500 text-sm">Powered by MongoDB Atlas · Full CRUD</p>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => navigate('/login')}
+            className="inline-flex items-center justify-center h-10 px-4 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold transition-colors"
+          >
+            Login
+          </button>
+        </div>
       </div>
 
       {/* Card */}
@@ -267,4 +282,108 @@ function App() {
   );
 }
 
-export default App;
+function Login() {
+  const navigate = useNavigate();
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    if (username === 'admin' && password === 'password123') {
+      setError('');
+      navigate('/dashboard');
+      return;
+    }
+    setError('Invalid username or password');
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex flex-col items-center py-16 px-4">
+      <div className="w-full max-w-lg mb-8">
+        <div className="flex items-center justify-between gap-4">
+          <div className="text-left">
+            <h1 className="text-4xl font-extrabold text-indigo-700 tracking-tight">Login</h1>
+            <p className="mt-2 text-gray-500 text-sm">Use your credentials to continue</p>
+          </div>
+          <Link
+            to="/"
+            className="inline-flex items-center justify-center h-10 px-4 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold transition-colors"
+          >
+            Home
+          </Link>
+        </div>
+      </div>
+
+      <div className="w-full max-w-lg bg-white rounded-2xl shadow-xl p-8">
+        <form onSubmit={onSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <label className="text-sm font-semibold text-gray-700">Username</label>
+            <input
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Username"
+              className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-semibold text-gray-700">Password</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password"
+              className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition"
+            />
+          </div>
+
+          {error && (
+            <div className="error-message bg-red-50 border-l-4 border-red-400 p-4 rounded-md">
+              <p className="text-sm text-red-700 font-medium">{error}</p>
+            </div>
+          )}
+
+          <button
+            type="submit"
+            className="w-full h-10 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold transition-colors"
+          >
+            Login
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+function Dashboard() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex flex-col items-center py-16 px-4">
+      <div className="w-full max-w-lg mb-8">
+        <div className="flex items-center justify-between gap-4">
+          <div className="text-left">
+            <h1 className="text-4xl font-extrabold text-indigo-700 tracking-tight">Dashboard</h1>
+            <p className="mt-2 text-gray-500 text-sm">You are logged in</p>
+          </div>
+          <Link
+            to="/"
+            className="inline-flex items-center justify-center h-10 px-4 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold transition-colors"
+          >
+            Task Manager
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<TaskManager />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="*" element={<TaskManager />} />
+    </Routes>
+  );
+}

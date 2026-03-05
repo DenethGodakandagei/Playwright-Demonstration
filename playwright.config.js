@@ -16,10 +16,10 @@ module.exports = defineConfig({
 
     use: {
         // Base URL for all page.goto() calls
-        baseURL: 'http://localhost:3001',
+        baseURL: 'http://localhost:3000',
 
         // Collect traces when a test fails (great for debugging)
-        trace: 'on-first-retry',
+        trace: 'retain-on-failure',
 
         // Take screenshot automatically on failure
         screenshot: 'only-on-failure',
