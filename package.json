@@ -1,0 +1,27 @@
+{
+  "name": "playwright-demonstration",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "playwright test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DenethGodakandagei/Playwright-Demonstration.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/DenethGodakandagei/Playwright-Demonstration/issues"
+  },
+  "homepage": "https://github.com/DenethGodakandagei/Playwright-Demonstration#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.58.2"
+  }
+}
