@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test('check our app is working', async ({ page }) => {
 
     // 1. Go to our React website
-    await page.goto('http://localhost:3001');
+    await page.goto('http://localhost:3000');
 
     // 2. Check if the page heading is correct
     const heading = page.locator('h1');

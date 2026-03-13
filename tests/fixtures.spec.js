@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 // beforeEach runs BEFORE every single test automatically
 test.beforeEach(async ({ page }) => {
     // Always start from the home page before each test
-    await page.goto('http://localhost:3001');
+    await page.goto('http://localhost:3000');
     // Always wait for the app to be fully loaded
     await page.waitForLoadState('networkidle');
 });
