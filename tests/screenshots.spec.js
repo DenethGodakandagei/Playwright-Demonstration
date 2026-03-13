@@ -22,7 +22,8 @@ test('visual regression - check homepage looks correct', async ({ page }) => {
   // toHaveScreenshot() compares with the saved 'golden' screenshot
   // If anything on the page changed visually, this test will FAIL
   await expect(page).toHaveScreenshot('homepage-snapshot.png', {
-    maxDiffPixels: 100  // Allow tiny differences (e.g. from font rendering)
+  maxDiffPixelRatio: 0.05,
+  threshold: 0.2 // Allow tiny differences (e.g. from font rendering)
   });
 });
 

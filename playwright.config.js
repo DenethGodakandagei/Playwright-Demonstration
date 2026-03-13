@@ -12,8 +12,9 @@ module.exports = defineConfig({
     retries: 0,
 
     // Reporter to use
-    reporter: 'list',
+    reporter: 'html',
 
+    
     use: {
         // Base URL for all page.goto() calls
         baseURL: 'http://localhost:3000',
