@@ -1,47 +1,90 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Mocking and Stubbing Tests', () => {
+test.describe('Mocking and Stubbing Tests - Task Manager App', () => {
 
-  test('mocks an API response (Network Interception)', async ({ page }) => {
+  test('mocks GET /api/tasks to return fake initial tasks', async ({ page }) => {
     // 1. Setup the Mock (Stub)
-    // Intercept any GET request matching the URL pattern '**/api/v1/fruits'
-    await page.route('**/api/v1/fruits', async route => {
-      // Provide a custom JSON response instead of letting the request go to the real server
-      const mockedResponse = [
-        { name: 'Mocked Strawberry', id: 21 },
-        { name: 'Mocked Apple', id: 22 }
-      ];
-      
-      // Fulfill the route with our fake data
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify(mockedResponse)
-      });
+    // Intercept GET requests to the backend tasks API
+    await page.route('**/api/tasks', async route => {
+      if (route.request().method() === 'GET') {
+        // Provide a custom JSON response with fake database items
+        const mockedResponse = [
+          { _id: '1', text: 'Mocked Task 1 - Learn Playwright' },
+          { _id: '2', text: 'Mocked Task 2 - Implement Mocking' }
+        ];
+        
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify(mockedResponse)
+        });
+      } else {
+        await route.continue();
+      }
     });
 
     // 2. Trigger the Request
-    // Go to a page that fetches and displays the fruits.
-    // The page will receive our mocked data instead of real data.
-    await page.goto('https://demo.playwright.dev/api-mocking');
+    // Go to the main page (the app fetches /api/tasks on load)
+    await page.goto('/');
 
     // 3. Assert on the Mocked Data
-    // Verify that the UI correctly displays the fake data we provided
-    await expect(page.getByText('Mocked Strawberry')).toBeVisible();
-    await expect(page.getByText('Mocked Apple')).toBeVisible();
+    // Verify that our mocked data successfully appears on the page
+    await expect(page.locator('.task-item').nth(0)).toContainText('Mocked Task 1 - Learn Playwright');
+    await expect(page.locator('.task-item').nth(1)).toContainText('Mocked Task 2 - Implement Mocking');
+    
+    // Check that the task count says "2 tasks total"
+    await expect(page.getByText('2 tasks total')).toBeVisible();
   });
 
-  test('stubs (aborts) image requests to speed up testing', async ({ page }) => {
-    // Intercept all image requests using a regex pattern
-    await page.route('**/*.{png,jpg,jpeg,svg}', async route => {
-      // Abort the request, meaning the images will never load
-      await route.abort();
+  test('mocks POST /api/tasks to test task addition without touching the real DB', async ({ page }) => {
+    // First, mock the initial GET request to return an empty generic list
+    await page.route('**/api/tasks', async route => {
+      if (route.request().method() === 'GET') {
+        await route.fulfill({ status: 200, contentType: 'application/json', body: '[]' });
+      } 
+      else if (route.request().method() === 'POST') {
+        // Extract the task text sent by the frontend
+        const postData = JSON.parse(route.request().postData() || '{}');
+        
+        // Mock a successful 201 Created response
+        await route.fulfill({
+          status: 201,
+          contentType: 'application/json',
+          body: JSON.stringify({ _id: '999', text: postData.text })
+        });
+      } else {
+        await route.continue(); // Let other requests pass through
+      }
     });
 
-    // Go to any website with images
-    await page.goto('https://demo.playwright.dev');
+    await page.goto('/');
 
-    // The page loads faster because no images were downloaded!
+    // We should see no tasks initially
+    await expect(page.getByText('No tasks yet')).toBeVisible();
+
+    // Type and submit a new task
+    await page.getByPlaceholder('Enter a new task...').fill('Fake Task via Mocked POST');
+    await page.getByRole('button', { name: 'Add Task' }).click();
+
+    // Verify the UI updates correctly with the mocked POST data without actually hitting the database
+    await expect(page.locator('.task-item').first()).toContainText('Fake Task via Mocked POST');
   });
 
+  test('mocks an API error to safely test the frontend error banner UI', async ({ page }) => {
+    // Force the API to fail immediately with a 500 status code
+    await page.route('**/api/tasks', async route => {
+      await route.fulfill({
+        status: 500,
+        contentType: 'application/json',
+        body: JSON.stringify({ message: "Simulated Internal Server Error" }) // Though App.js might ignore the message body and throw "Server Error!"
+      });
+    });
+
+    await page.goto('/');
+
+    // Verify that the error banner appears appropriately
+    const errorBanner = page.locator('.error-banner');
+    await expect(errorBanner).toBeVisible();
+    await expect(errorBanner).toContainText('Server Error!');
+  });
 });
