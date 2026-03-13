@@ -182,5 +182,45 @@
             - img [ref=e222]
           - button "Delete" [ref=e224] [cursor=pointer]:
             - img [ref=e225]
-    - paragraph [ref=e227]: 21 tasks total
+      - generic [ref=e227]:
+        - generic [ref=e228]: "22"
+        - generic [ref=e229]: Demo Task for Trace
+        - generic [ref=e230]:
+          - button "Edit" [ref=e231] [cursor=pointer]:
+            - img [ref=e232]
+          - button "Delete" [ref=e234] [cursor=pointer]:
+            - img [ref=e235]
+      - generic [ref=e237]:
+        - generic [ref=e238]: "23"
+        - generic [ref=e239]: Demo Task for Trace
+        - generic [ref=e240]:
+          - button "Edit" [ref=e241] [cursor=pointer]:
+            - img [ref=e242]
+          - button "Delete" [ref=e244] [cursor=pointer]:
+            - img [ref=e245]
+      - generic [ref=e247]:
+        - generic [ref=e248]: "24"
+        - generic [ref=e249]: Demo Task for Trace
+        - generic [ref=e250]:
+          - button "Edit" [ref=e251] [cursor=pointer]:
+            - img [ref=e252]
+          - button "Delete" [ref=e254] [cursor=pointer]:
+            - img [ref=e255]
+      - generic [ref=e257]:
+        - generic [ref=e258]: "25"
+        - generic [ref=e259]: Demo Task for Trace
+        - generic [ref=e260]:
+          - button "Edit" [ref=e261] [cursor=pointer]:
+            - img [ref=e262]
+          - button "Delete" [ref=e264] [cursor=pointer]:
+            - img [ref=e265]
+      - generic [ref=e267]:
+        - generic [ref=e268]: "26"
+        - generic [ref=e269]: Demo Task for Trace
+        - generic [ref=e270]:
+          - button "Edit" [ref=e271] [cursor=pointer]:
+            - img [ref=e272]
+          - button "Delete" [ref=e274] [cursor=pointer]:
+            - img [ref=e275]
+    - paragraph [ref=e277]: 26 tasks total
 ```
